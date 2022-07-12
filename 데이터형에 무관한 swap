@@ -1,0 +1,31 @@
+#include <stdio.h>
+
+
+void swap(void* a, void* b, int n)
+{
+	void* t;
+	t = malloc(n); /* 임시영역 t에 n만큼의 공간 확보 */
+	memcpy(t, a, n); /* t=a*/
+	memcpy(a, b, n);
+	memcpy(b, t, n);
+	free(t); /*t에 할당된 메모리 해제*/
+}
+
+void main(void)
+{
+	char c1 = 'A', c2 = 'B';
+	int i1 = 100 , i2 = 200;
+	float f1 = 3.14, f2 = 2.71;
+
+	printf("\n Before : %c %c", c1, c2);
+	swap(&c1, &c2, sizeof(char));
+	printf("\tAfter : %c %c", c1, c2);
+
+	printf("\n Before : %d %d", i1, i2);
+	swap(&i1, &i2, sizeof(int));
+	printf("\tAfter : %d %d", i1, i2);
+
+	printf("\n Before : %f %f", f1, f2);
+	swap(&f1, &f2, sizeof(float));
+	printf("\tAfter : %f %f", f1, f2);
+}
