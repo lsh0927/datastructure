@@ -1,0 +1,225 @@
+#include <conio.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <dos.h>
+
+#define MAZE_SIZE 19
+#define ROBOT 2
+
+int maze[MAZE_SIZE][MAZE_SIZE] = {
+
+{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+{0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
+{1,0,1,0,1,1,1,0,1,1,1,1,1,0,1,0,1,0,1},
+{1,0,0,1,1,1,1,1,1,1,0,0,0,0,1,1,1,0,1},
+{0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
+{0,0,1,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,1},
+{1,0,0,1,1,1,1,1,1,1,0,0,0,0,1,1,1,0,1},
+{1,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,0,1},
+{1,0,0,1,0,1,1,1,1,1,0,0,0,0,1,1,1,0,1},
+{1,0,0,1,1,1,1,1,1,1,0,0,0,0,1,1,1,0,1},
+{1,0,0,1,0,1,0,1,1,1,0,0,0,0,1,1,1,0,1},
+{1,0,0,1,1,1,1,1,1,1,0,0,0,0,1,1,1,0,1},
+{1,0,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,0,1},
+{1,0,0,1,1,0,1,1,1,1,0,0,0,0,1,1,1,0,1},
+{1,0,0,1,1,1,1,1,1,1,0,1,1,0,1,1,1,0,1},
+{1,0,0,1,1,0,1,1,1,1,0,0,0,0,1,1,1,0,1},
+{1,0,0,0,1,1,1,1,1,1,0,1,0,0,1,1,1,0,1},
+{1,0,0,1,1,1,0,0,1,1,0,1,1,0,1,1,1,0,1},
+{1,0,0,1,0,1,0,1,0,1,0,0,0,0,1,1,1,0,1} };
+
+
+int sx = MAZE_SIZE - 1;
+int sy = MAZE_SIZE - 2; /*생쥐의 출발 위치*/
+int* rec;
+
+#define UP 1
+#define RIGHT 2
+#define DOWN 4
+#define LEFT 8
+
+int get_shape(int m[][MAZE_SIZE], int x, int y)
+{
+	/*벽 배치에 따른 중앙벽의 모양 리턴*/
+	static shape[] = { 32,179,196,192,179,179,218,195,217,196,193,191,180,194,197 };
+	int s = 0;
+	if (m[y][x])
+	{
+		if (y > 0 && m[y - 1][x]) s |= UP;
+		if (y <MAZE_SIZE-2 && m[y + 1][x]) s |= DOWN;
+		if (x > 0 && m[y][x-1]) s |= LEFT;
+		if (x <MAZE_SIZE && m[y][x+1]) s |= RIGHT;
+	}
+	return shape[s];
+}
+
+void draw_maze(int m[][MAZE_SIZE])
+{
+	/*미로를 화면에 그려줌*/
+	
+	int i, j;
+	for(j=0;j<MAZE_SIZE;j++)
+		for (i = 0; i < MAZE_SIZE; i++)
+		{
+			gotoxy(i + 1, j + 1);
+			putch(get_shape(m, i, j));
+		}
+
+}
+
+void record(int x, int y)
+{
+	/*생쥐의 이동경로를 저장*/
+
+	static int index = 0;
+	rec[index++] = x;
+	rec[index++] = y;
+
+}
+
+void forward(int* x, int* y, int dir)
+{
+	/*생쥐를 한칸 앞으로 이동*/
+	gotoxy(*x + 1, *y + 1);
+	putch(' ');
+
+	*x = (dir == LEFT) ? --(*x): 
+		 (dir == RIGHT) ? ++(*x): *x;
+	*y = (dir == UP) ? --(*y) :
+		(dir == DOWN) ? ++(*y) : *y;
+
+	record(*x, *y); /*생쥐의 이동경로 저장*/
+	gotoxy(*x + 1, *y + 1);
+	putch(ROBOT);
+}
+
+
+void right(int* dir)
+{
+	/*생쥐의 방향을 시계방향으로*/
+	*dir <<= 1;
+	*dir = (*dir > LEFT) ? UP : *dir;
+}
+
+void left(int* dir)
+{
+	/*생쥐의 방향을 반시계방향으로*/
+	*dir >>= 1;
+	*dir = (*dir ==0 ) ? LEFT : *dir;
+}
+
+int still_in_maze(int x, int y)
+{
+	/*아직도 미로에 들어가있나?*/
+	if (x > 0 && x < MAZE_SIZE - 1 && y>0 && y < MAZE_SIZE - 1)
+		return 1;
+	else
+		return 0;
+}
+
+int wall_ahead(int m[][MAZE_SIZE], int x, int y, int dir)
+{
+	/*벽이 앞에 잇는가?*/
+	x = (dir == LEFT) ? --x :
+		(dir == RIGHT) ? ++x : x;
+	y = (dir == UP) ? --y :
+		(dir == DOWN) ? ++y : y;
+	return m[y][x];
+
+}
+
+void right_hand(int m[][MAZE_SIZE], int x, int y, int dir)
+{
+	/* 우선법 알고리즘*/
+
+	gotoxy(x + 1, y + 1);
+	putch(ROBOT);
+	record(x, y);
+
+	forward(&x, &y, dir);
+	while (still_in_maze)
+	{
+		dalay(100);
+		right(&dir);
+		while (wall_ahead(m, x, y, dir))
+			left(&dir);
+		forward(&x, &y, dir);
+
+	}
+	record(-1, -1); /*생쥐의 움직임 끝*/
+}
+void del_path(int i, int j) /*최단경로로 다시 움직이기 위한 함수*/
+{
+	/*중복된 경로 삭제*/
+	while (rec[j] > 0)
+		rec[i++] = rec[j++];
+	rec[i] = -1;
+
+}
+
+void shortest_path(void)
+{
+	/*중복된 경로 제거 알고리즘*/
+	int i = 0;
+	int x, y;
+	int j;
+	int x1, y1;
+
+	while (rec[i] >= 0)
+	{
+		x = rec[i];
+		y = rec[i + 1];
+		j = i + 2;
+		while (rec[j] >= 0)
+		{
+			x1 = rec[j];
+			y1 = rec[j + 1];
+			if (x == x1 && y == y1)
+				del_path(i, j);
+			j++;
+			j++;
+		}
+		i++;
+		i++;
+
+	}
+
+
+	i = 0; /*최단 경로로 움직이는 생쥐 애니매이션*/
+	while (rec[i] >= 0)
+	{
+		x = rec[i++];
+		y = rec[i++];
+		gotoxy(x + 1, y + 1);
+		putch(ROBOT);
+		delay(100);
+		gotoxy(x + 1, y + 1);
+		putch(' ');
+
+	}
+}
+
+void main(void)
+{
+	rec = (int*)malloc(MAZE_SIZE * MAZE_SIZE); /*생쥐의 움직임 저장*/
+	if (rec == NULL)
+	{
+		cputs("\r\n Memory allocation error");
+		exit(1);
+	}
+	clrscr();
+	draw_maze(maze);
+	gotoxy(40, 5);
+	cputs("Simulation of Micro Mouse");
+	gotoxy(40, 10);
+	cputs(" Press any key to Start");
+	right_hand(maze, sx, sy, LEFT); /*생쥐 1차 시도*/
+
+	gotoxy(40, 10);
+	cputs(" Press any key to see shortest path");
+	shortest_path(); /* 생쥐 2차 시도, 최단 경로*/
+
+	gotoxy(40, 10);
+	cput("Press any key to end program");
+
+}
