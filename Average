@@ -1,0 +1,29 @@
+#include <stdio.h>
+
+#define MAX 10
+
+
+int average(int a[], int n)
+{
+	int sum = 0;
+	int i;
+
+	for (i = 0; i < n; i++)
+	{
+		sum += a[i];
+		return (sum / n);
+	}
+
+}
+
+void main(void)
+{
+	int array[MAX];
+	int i;
+
+	printf("\n Input %d integer->", MAX);
+	for (i = 0; i < MAX; i++)
+		scanf("%d", array + i); /*array+i는 &array[i]와 같다*/
+
+	printf("\nAverage of %d integer is %d", MAX, average(array, MAX)); /* 배열명을 넘긴다*/
+}
