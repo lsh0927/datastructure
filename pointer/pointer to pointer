@@ -1,0 +1,36 @@
+#include <stdio.h>
+
+
+int global_val = 30;
+
+void call_by_value(int* val) //인트형의 local_val의 주소
+{
+	val = &global_val; //30이라는 값이 담긴 global_val변수의 주소가 val이라는 변수에 저장되었을 뿐 value(주소)와 *value(10)의 값이 변하지 않음
+	
+}
+
+void call_by_refer(int* ref)	//int형의 &refer(local_val의 주소라는 값이 담긴, int형의 refer의 주소)가 인자로 들어감 
+{
+	*ref = (int)&global_val;  //*ref는, refer의 주소에 저장된 값인데, 이 저장된 값이 global_val의 주소로 바뀜. 따라서 refer는 global_val의 주소를 가리키게 되고, *refer는 30이 됨.
+}
+
+int main()
+{
+	int local_val = 10;
+	int* value = &local_val; //인트형의 value포인터가 local_val의 주소를 가리킴.
+	int* refer = &local_val;  //인트형의 refer포인터가 local_val의 주소를 가리킴.
+
+
+
+	printf("before : *value=%d, *refer=%d\n", *value, *refer); //둘다 10이 나올 것임
+	
+	call_by_value(value); //주소가 파라미터로 들어감
+	call_by_refer((int*)&refer); //local_val의 주소를 가리키는 포인터 refer의 주소를 인트형으로 변환해 call_by_refer에 전달?
+
+	printf("after  : *value=%d, *refer=%d\n", *value, *refer); //*value는 10, *refer는 30.
+}
+
+
+
+/* 함수는 stack 영역에 생김, heap영역에 생기는 내용 */
+/*포인터 주소를 출력하기 위한 형식 지정자 => %p*/
