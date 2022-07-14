@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+int get_gcd(int u,int v)
+{
+    int t; /*temp 변수, 위치 교환*/
+    while (u) /*u가0이면 루프를 끝내고, 아니면 루프를 지속한다*/
+    {
+        if (u < v)
+        {
+            t = u;
+            u = v;
+            v = t;
+        }
+        u = u - v;
+    }
+    return v;
+}
+
+void main()
+{
+    int u,v;
+    puts("\nEUCLID1: GET GCD of two positive integer->"
+    "\n             input 0 to end program");
+
+while(1)
+{
+    puts("\n\n INPUT two positive integer-> ");
+    scanf("%d%d", &u,&v);
+    if (u<0 ||v<0) /*음수의 입력은 무효*/
+    continue;
+    if(u==0 || v==0) /*0입력시 종료*/
+    break;
+    printf("\n GCD od %d and %d is %d.",u,v,get_gcd(u,v));
+}
+}
