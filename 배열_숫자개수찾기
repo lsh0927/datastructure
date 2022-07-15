@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
+int main(void)
+{
+	int i,b;
+	int A, B, C;
+	int arr[10] = { 0, };
+	
+	scanf("%d%d%d", &A, &B, &C);
+	int m = A * B * C;
+	while(m>0)
+	{
+		b = m % 10;
+		arr[b]++;
+		m /= 10;
+	}
+	for (int a = 0; a < 10; a++)
+	{
+		printf("%d\n", arr[a]);
+	}
+	return 0;
+}
+/*배열을 이용해 곱셈의 결과에 0~9까지의 숫자가 각각 몇개인지 차례로 출력*/
