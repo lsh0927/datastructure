@@ -1,0 +1,17 @@
+int bin_serach(const int a[], int n, int key) 
+{
+	int pl = 0;                                                    // 검색범위 맨앞 인덱스
+	int pr = n - 1;                                                // 검색범위 맨뒤 인덱스
+	int pc;
+	do {
+		pc = (pl + pr) / 2; //중앙 요소의 인덱스
+		if (a[pc] == key)
+			return pc;        //검색 성공
+		else if (a[pc] < key)
+			pl = pc + 1;           //검색 범위를 뒤쪽 반으로 줄임
+		else
+			pr = pc - 1;          //검색 범위를 앞쪽 반으로 줄임
+
+	} while (pl <= pr);
+	return -1;       //검색실패->1->o(1)
+}
