@@ -1,17 +1,30 @@
-int bin_serach(const int a[], int n, int key) 
+
+int bin_serach(const int a[], int n, int key)
 {
-	int pl = 0;                                                    // 검색범위 맨앞 인덱스
-	int pr = n - 1;                                                // 검색범위 맨뒤 인덱스
+	int pl = 0;                                                    // 1,검색범위 맨앞 인덱스
+	int pr = n - 1;                                                // 2검색범위 맨뒤 인덱스
 	int pc;
 	do {
-		pc = (pl + pr) / 2; //중앙 요소의 인덱스
-		if (a[pc] == key)
-			return pc;        //검색 성공
-		else if (a[pc] < key)
-			pl = pc + 1;           //검색 범위를 뒤쪽 반으로 줄임
-		else
-			pr = pc - 1;          //검색 범위를 앞쪽 반으로 줄임
+		pc = (pl + pr) / 2; //3,중앙 요소의 인덱스
+		if (a[pc] == key)	//4.
+			return pc;        //5.검색 성공
+		else if (a[pc] < key) //6
+			pl = pc + 1;           //7검색 범위를 뒤쪽 반으로 줄임
+		else                       //8
+			pr = pc - 1;          //9,검색 범위를 앞쪽 반으로 줄임
 
-	} while (pl <= pr);
-	return -1;       //검색실패->1->o(1)
+	} while (pl <= pr); //10
+	return -1;       //11,검색실패->1->o(1)
 }
+/* 실행단계=실행횟수 / 복잡도*/
+/*    1   =    1	/  O(1)*/
+/*    2   =    1	/  O(1)*/
+/*    3   =   log n	/  O(log n)*/
+/*    4   =   log n	/  O(log n)*/
+/*    5   =    1	/  O(1)*/
+/*    6   =   log n	/  O(log n)*/
+/*    7   =   log n	/  O(log n)*/
+/*    8   =   log n	/  O(log n)*/
+/*    9   =   log n	/  O(log n)*/
+/*    10  =   log n	/  O(log n)*/
+/*    11  =    1	/  O(1)*/
