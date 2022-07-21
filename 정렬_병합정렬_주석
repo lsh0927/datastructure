@@ -1,0 +1,64 @@
+/*병합 정렬*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+static int* buff;  /*작업용 배열*/
+
+static void __mergesort(int a[], int left, int right)
+{
+	if (left < right)
+	{
+		int center = (left + right) / 2;
+		int p = 0;
+		int i;
+		int j = 0;
+		int k = left;
+		__mergesort(a, left, center);		/*앞부분에 대한 병합 정렬*/
+		__mergesort(a, center + 1, right);	/*뒷부분에 대한 병합 정렬*/ /*재귀함수*/
+
+		for (i = left; i <= center; i++) //배열의 앞부분인 a[left]~a[center]를 buff[0]~buff[center-left]로 복사함. for문이 끝날떄 p의 값은 복사한 요소의 개수 center-left+1이 됨.
+			buff[p++] = a[i];
+		while (i <= right && j < p)   //배열의 뒷부분과 buff로 복사한 배열의 앞부분 p개를 병합한 결과를 배열 a에 저장
+			a[k++] = (buff[j] <= a[i]) ? buff[j++] : a[i++];
+		while (j < p) //배열 buff에 남아있는 요소를 배열 a로 복사
+			a[k++] = buff[j++];
+
+	}
+}
+
+
+/*병합 정렬 함수*/
+int mergesort(int a[], int n)
+{
+	if ((buff = calloc(n, sizeof(int))) == NULL) //mergesort 함수는 병합결과를 일시적으로 저장할 작업용 배열인 buff를 생성합니다.
+
+		return -1;
+	__mergesort(a, 0, n - 1); /*배열 전체를 병합 정렬*/       /*실제로 정렬 작업을 수행할  __mergesort함수를 호출합니다.*/
+	free(buff);
+	return 0;
+}
+int main(void)
+{
+	int i, nx;
+	int* x;
+	puts("병합 정렬");
+	printf("요소 개수");
+	scanf("%d", &nx);
+	x = calloc(nx, sizeof(int));
+
+	for (i = 0; i < nx; i++)
+	{
+		printf("x[%d]:", i);
+		scanf("%d", &x[i]);   //x배열 만들고 요소를 직접 대입
+	}
+	mergesort(x, nx); /*배열 x를 병합 정렬*/
+
+	puts("오름차순으로 정렬했습니다");
+	for (i = 0; i < nx; i++)
+		printf("x[%d]=%d\n", i, x[i]);
+	free(x);
+
+	return 0;
+}
