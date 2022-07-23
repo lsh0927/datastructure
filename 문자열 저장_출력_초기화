@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+int main(void)
+{
+	char st[10];
+	st[0] = 'A';
+	st[1] = 'B';
+	st[2] = 'C';
+	st[3] = 'D';
+	st[4] = '\0';
+	printf("문자열 st에는 \"%s\"가 들어있습니다/\n", st);
+
+	return 0;
+}
+
+/*문자열 초기화하며 선언
+
+#include <stdio.h>
+
+int main(void)
+{
+	char st[10]="ABCD";
+	printf("문자열 st에는 \"%s\"가 들어있습니다.\n",st);
+	
+	return 0;
+}
+
+*/
+
+/*문자열을 출력(포인터를 사용)*/
+/* #include <stdio.h>
+
+int main(void)
+{
+  char *pt="12345";
+  printf("포인터 pt는 \"%s\"를 가리킵니다.\n",pt);
+
+  return 0;
+
+
+
+*/
